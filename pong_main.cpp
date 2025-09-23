@@ -36,17 +36,6 @@ void init() {
 	//set size and origin of ball
 	ball.setRadius(ballRadius);
 	ball.setOrigin(ballRadius, ballRadius);//should be half the ball width and height
-
-	//reset paddle conditions
-	paddles[0].setPosition(paddleOffsetWall + paddleSize.x / 2.f, gameHeight / 2.f);
-	paddles[1].setPosition(gameWidth - (paddleOffsetWall + paddleSize.x / 2.f), gameHeight / 2.f);
-
-	//reset ball position
-	ball.setPosition(gameWidth / 2.f, gameHeight / 2.f);
-
-	ball_velocity = { (is_player1_serving ? initial_velocity_x : -initial_velocity_x), initial_velocity_y };
-
-
 }
 
 void reset() {
@@ -59,6 +48,9 @@ void reset() {
 
 	//reset ball position
 	ball.setPosition(gameWidth / 2.f, gameHeight / 2.f);
+
+	//reset ball velocity
+	ball_velocity = { (is_player1_serving ? initial_velocity_x : -initial_velocity_x), initial_velocity_y };
 
 }
 
@@ -73,36 +65,36 @@ void update(float dt) {
 
 	// Handle paddle 1 movement
 	float P1_direction = 0.0f;
-	if (sf::Keyboard::isKeyPressed(controls[0])) {
+	if (sf::Keyboard::isKeyPressed(controls[0]) && py1 >= 50) {
 		P1_direction--;
 	}
-	else if (py1 < 0) {
-		P1_direction += 10.f;
+	else if (py1 < 50) {
+		P1_direction += 1.f;
 	}
 
-	if (sf::Keyboard::isKeyPressed(controls[1])) {
+	if (sf::Keyboard::isKeyPressed(controls[1]) && py1 <= (gameHeight - 50)) {
 		P1_direction++;
 	}
-	else if (py1 > gameHeight) {
-		P1_direction -= 10.f;
+	else if (py1 > (gameHeight - 50)) {
+		P1_direction -= 1.f;
 	}
 
 	paddles[0].move(sf::Vector2f(0.f, P1_direction * paddleSpeed * dt));
 
 	// Handle paddle 2 movement
 	float P2_direction = 0.0f;
-	if (sf::Keyboard::isKeyPressed(controls[2])) {
+	if (sf::Keyboard::isKeyPressed(controls[2]) && py2 >= 50) {
 		P2_direction--;
 	}
-	else if (py2 < 0) {
-		P2_direction += 10.f;
+	else if (py2 < 50) {
+		P2_direction += 1.f;
 	}
 
-	if (sf::Keyboard::isKeyPressed(controls[3])) {
+	if (sf::Keyboard::isKeyPressed(controls[3]) && py2 <= (gameHeight - 50)) {
 		P2_direction++;
 	}
-	else if (py2 > gameHeight) {
-		P2_direction -= 10.f;
+	else if (py2 > (gameHeight - 50)) {
+		P2_direction -= 1.f;
 	}
 
 	paddles[1].move(sf::Vector2f(0.f, P2_direction * paddleSpeed * dt));
@@ -113,6 +105,7 @@ void update(float dt) {
 	// check ball collision
 	const float bx = ball.getPosition().x;
 	const float by = ball.getPosition().y;
+
 	if (by > gameHeight) { //bottom wall
 		// bottom wall
 		ball_velocity.x *= velocity_multiplier;
@@ -155,7 +148,7 @@ void update(float dt) {
 		}
 	else if (
 		//ball is inline or behind paddle AND
-		bx < paddleSize.x + paddleOffsetWall &&
+		bx > (gameWidth - (paddleOffsetWall + paddleSize.x)) &&
 		//ball is below top edge of paddle AND
 		by > paddles[1].getPosition().y - (paddleSize.y * 0.5) &&
 		//ball is above bottom edge of paddle
@@ -185,6 +178,7 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode({ gameWidth, gameHeight }), "PONG");
 	//initialise and load
 	init();
+	reset();
 	while (window.isOpen()) {
 		//Calculate dt
 		static sf::Clock clock;
