@@ -1,4 +1,6 @@
 #include <SFML/Graphics.hpp>
+#include <iostream> 
+#include <string>
 
 // Establishing controls
 const sf::Keyboard::Key controls[4] = {
@@ -22,6 +24,10 @@ bool is_player1_serving = true;
 const float initial_velocity_x = 100.f;	// Horizontal velocity
 const float initial_velocity_y = 60.f;	// Vertical velocity
 const float velocity_multiplier = 1.1f; //how much the ball will speed up everytime it hits a paddle. Here, 10% every time.
+int score = 0;
+
+sf::Font Font;
+sf::Text Text;
 
 //Objects of the game
 sf::CircleShape ball;
@@ -36,12 +42,19 @@ void init() {
 	//set size and origin of ball
 	ball.setRadius(ballRadius);
 	ball.setOrigin(ballRadius, ballRadius);//should be half the ball width and height
+
+	// Load font-face from res dir
+	Font.loadFromFile("C:/Users/dougl/pong/out/build/x64-Debug/bin/Roboto-VariableFont_wdth,wght.ttf");
+	// Set text element to use font
+	Text.setFont(Font);
+	// set the character size to 24 pixels
+	Text.setCharacterSize(24);
 }
 
 void reset() {
 
 	//reset all the objects
-
+	
 	//reset paddle conditions
 	paddles[0].setPosition(paddleOffsetWall + paddleSize.x / 2.f, gameHeight / 2.f);
 	paddles[1].setPosition(gameWidth - (paddleOffsetWall + paddleSize.x / 2.f), gameHeight / 2.f);
@@ -51,6 +64,13 @@ void reset() {
 
 	//reset ball velocity
 	ball_velocity = { (is_player1_serving ? initial_velocity_x : -initial_velocity_x), initial_velocity_y };
+
+	// Update Score Text
+	std::string str_score = std::to_string(score);
+	Text.setString(str_score);
+
+	// Keep Score Text Centered
+	Text.setPosition((gameWidth * .5f) - (Text.getLocalBounds().width * .5f), 0);
 
 }
 
@@ -123,14 +143,19 @@ void update(float dt) {
 		ball_velocity.x *= -velocity_multiplier;
 		ball_velocity.y *= velocity_multiplier;
 		ball.move(sf::Vector2f(-10.f, 0.f));
+		is_player1_serving = true;
+		score += 1;
 		reset();
+		
 	}
 	else if (bx < 0) {
 		// left wall
 		ball_velocity.x *= -velocity_multiplier;
 		ball_velocity.y *= velocity_multiplier;
 		ball.move(sf::Vector2f(10.f, 0.f));
+		is_player1_serving = false;
 		reset();
+		
 	}
 	else if (
 		//ball is inline or behind paddle AND
@@ -167,6 +192,7 @@ void render(sf::RenderWindow& window) {
 	window.draw(paddles[0]);
 	window.draw(paddles[1]);
 	window.draw(ball);
+	window.draw(Text);
 }
 
 void clean() {
