@@ -19,14 +19,28 @@ void GameSystem::init() {
 	if (!spritesheet.loadFromFile("C:/Users/User/git/space_invaders/res/invaders_sheet.png")) {
 		std::cerr << "Failed to load spritesheet!" << std::endl;
 	}
-	invader.setTexture(spritesheet);
-	invader.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(32, 32)));
+	/*invader.setTexture(spritesheet);
+	invader.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(32, 32)));*/
 	
 	std::cout << "print on the standard output of the console" <<  std::endl; //end of line
 	std::cerr << "print on the error output of the console" << std::endl; 
 
-	std::shared_ptr<Invader> inv = std::make_shared<Invader>(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(32, 32)), sf::Vector2f{ 100, 100 });
-	ships.push_back(inv); //This is when the copy constructor is called.
+	int rows = 5;
+	int columns = 11;
+	const int spacing = 50;
+
+	for (int r = 0; r < rows; r++) 
+	{
+		for (int c = 0; c < columns; c++)
+		{
+			sf::IntRect rect(sf::Vector2i(0,0), sf::Vector2i(32,32));
+			sf::Vector2f pos{ 100.f + c * spacing, 100.f + r * spacing};
+			std::shared_ptr<Invader> inv = std::make_shared<Invader>(rect, pos);
+			inv->setTexture(spritesheet);
+			ships.push_back(inv); //This is when the copy constructor is called.
+		}
+	}
+
 }
 
 
