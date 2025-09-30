@@ -1,4 +1,4 @@
-project(setup)
+project(space_invaders)
 cmake_minimum_required(VERSION 3.11)
 # Require modern C++
 set(CMAKE_CXX_STANDARD 14)
@@ -16,6 +16,6 @@ set(SFML_INCS "lib/SFML/include")
 link_directories("${CMAKE_BINARY_DIR}/lib/SFML/lib")
 
 #### Practical 1 ####
-add_executable(lab_1 pong_main.cpp)
-target_include_directories(lab_1 PRIVATE ${SFML_INCS})
-target_link_libraries(lab_1 sfml-graphics)
+add_executable(space_invaders main.cpp "ship.cpp" "main.cpp")
+target_include_directories(space_invaders PRIVATE ${SFML_INCS})
+target_link_libraries(space_invaders sfml-graphics)
