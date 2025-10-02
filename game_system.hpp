@@ -5,7 +5,8 @@
 struct GameSystem {
 
 	static std::vector<std::shared_ptr<Ship>> ships; //vector of shared pointers to Ships.
-		
+	static std::unique_ptr<Player> player;
+
 	//game system functions
 	static void init();
 	static void clean();
