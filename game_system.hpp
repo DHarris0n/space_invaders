@@ -1,16 +1,16 @@
-//game_system.hpp
+#pragma once
 #include <vector>
 #include <memory>
+#include <SFML/Graphics.hpp>
 #include "ship.hpp"
-struct GameSystem {
 
-	static std::vector<std::shared_ptr<Ship>> ships; //vector of shared pointers to Ships.
-	static std::unique_ptr<Player> player;
+struct GameSystem{
+    static std::vector<std::shared_ptr<Ship>> ships;
+    static sf::Texture spritesheet;
 
-	//game system functions
-	static void init();
-	static void clean();
-	static void update(const float& dt);
-	static void render(sf::RenderWindow& window);
-	static void reset();
+    static void init();
+    static void reset();
+    static void clean();
+    static void update(const float &dt);
+    static void render(sf::RenderWindow &window);
 };
